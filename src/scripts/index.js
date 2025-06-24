@@ -1,6 +1,7 @@
 import '../styles/styles.css';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { Workbox } from 'workbox-window';
 import App from './pages/app';
 import PushNotificationUI from './components/push-notification-ui';
 import PushNotificationManager from './utils/push-notification-manager';
@@ -68,6 +69,34 @@ document.addEventListener('DOMContentLoaded', async () => {
       navigationDrawer: document.querySelector('#navigation-drawer'),
     });
     await app.renderPage();
+
+    // Register Workbox Service Worker
+    if ('serviceWorker' in navigator) {
+      const wb = new Workbox('/sw.js');
+      
+      wb.addEventListener('installed', (event) => {
+        if (event.isUpdate) {
+          // Show update available notification
+          if (confirm('App update available. Reload to get the latest version?')) {
+            window.location.reload();
+          }
+        }
+      });
+
+      wb.addEventListener('waiting', (event) => {
+        // Show user a prompt to refresh/reload the page
+        if (confirm('New version available. Reload to update?')) {
+          wb.messageSkipWaiting();
+          window.location.reload();
+        }
+      });
+
+      try {
+        await wb.register();
+      } catch (error) {
+        console.log('SW registration failed');
+      }
+    }
 
     // Initialize Push Notifications after app is ready
     try {
