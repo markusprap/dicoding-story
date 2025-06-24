@@ -1,9 +1,5 @@
 import CONFIG from '../config';
 
-const ENDPOINTS = {
-  STORIES: `${CONFIG.BASE_URL}/stories`,
-};
-
 export class StoryModel {
   constructor() {
     // Will be injected by app initialization
@@ -12,29 +8,24 @@ export class StoryModel {
 
   setOfflineManager(offlineManager) {
     this.offlineManager = offlineManager;
-  }
-
-  async getStories() {
+  }  async getStories() {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found');
       }
       
-      // Use offline manager if available
       if (this.offlineManager) {
         return await this.offlineManager.getStories();
       }
       
-      // Fallback to direct API call
-      const response = await fetch(ENDPOINTS.STORIES, {
+      const url = `${CONFIG.BASE_URL}/stories`;
+      
+      const response = await fetch(url, {
         headers: { 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Accept-Language': 'en-US,en;q=0.9,id;q=0.8',
-          'Cache-Control': 'no-cache',
         },
       });
       
@@ -46,6 +37,8 @@ export class StoryModel {
           }));
           return [];
         }
+        
+        const errorText = await response.text();
         throw new Error(`Failed to fetch stories: ${response.status} ${response.statusText}`);
       }
       
@@ -54,37 +47,34 @@ export class StoryModel {
       if (!responseData.listStory) {
         throw new Error('Invalid response format from API');
       }
-        return responseData.listStory;
+      
+      return responseData.listStory;
     } catch (error) {
       throw error;
     }
-  }
-
-  async getStory(id) {
+  }  async getStory(id) {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found');
       }
       
-      // Use offline manager if available
       if (this.offlineManager) {
         return await this.offlineManager.getStory(id);
       }
       
-      // Fallback to direct API call
-      const response = await fetch(`${ENDPOINTS.STORIES}/${id}`, {
+      const url = `${CONFIG.BASE_URL}/stories/${id}`;
+      
+      const response = await fetch(url, {
         headers: { 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Accept-Language': 'en-US,en;q=0.9,id;q=0.8',
-          'Cache-Control': 'no-cache',
         },
       });
       
       if (!response.ok) {
+        const errorText = await response.text();
         throw new Error(`Failed to fetch story: ${response.status} ${response.statusText}`);
       }
       
@@ -103,9 +93,6 @@ export class AuthModel {  async login({ email, password }) {
         headers: { 
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Accept-Language': 'en-US,en;q=0.9,id;q=0.8',
-          'Cache-Control': 'no-cache',
         },
         body: JSON.stringify({ email, password }),
       });
@@ -131,21 +118,19 @@ export class AuthModel {  async login({ email, password }) {
       
       window.dispatchEvent(new CustomEvent('authStateChanged', { 
         detail: { authenticated: true, user: data.loginResult } 
-      }));      return data;
+      }));
+      
+      return data;
     } catch (error) {
       throw error;
     }
-  }
-  async register({ name, email, password }) {
+  }  async register({ name, email, password }) {
     try {
       const response = await fetch(`${CONFIG.BASE_URL}/register`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Accept-Language': 'en-US,en;q=0.9,id;q=0.8',
-          'Cache-Control': 'no-cache',
         },
         body: JSON.stringify({ name, email, password }),
       });

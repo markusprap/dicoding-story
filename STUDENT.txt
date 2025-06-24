@@ -1,4 +1,4 @@
-APP_URL=https://dicoding-story-web-pwa.netlify.app
+APP_URL=https://dicodingstory-project.netlify.app
 MAP_SERVICE_API_KEY=TIDAK_DIPERLUKAN_MENGGUNAKAN_OPENSTREETMAP_DAN_CARTODB_FREE_TILES
 
 # Dicoding Story Web - Progressive Web App
