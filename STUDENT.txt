@@ -1,0 +1,22 @@
+APP_URL=https://dicoding-story-web-pwa.netlify.app
+MAP_SERVICE_API_KEY=TIDAK_DIPERLUKAN_MENGGUNAKAN_OPENSTREETMAP_DAN_CARTODB_FREE_TILES
+
+# Dicoding Story Web - Progressive Web App
+# 
+# Features:
+# - 📱 Progressive Web App (PWA) with offline capability
+# - 🔔 Push Notifications dengan auto-triggering
+# - 💾 IndexedDB offline storage dan sync
+# - 🗺️ Interactive maps dengan geolocation
+# - 🎨 Modern responsive UI/UX
+# 
+# Technology Stack:
+# - Frontend: JavaScript ES6+, Webpack, CSS3
+# - PWA: Service Worker, Web App Manifest
+# - Database: IndexedDB (offline), Dicoding API (online)
+# - Maps: OpenStreetMap + CartoDB tiles
+# - Notifications: Web Push API dengan VAPID
+# 
+# Deployment: Netlify (PWA-optimized hosting)
+# Last Updated: June 24, 2025
+# Developer: Levina | PM: Markus

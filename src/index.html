@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Dicoding Stories - Platform berbagi cerita dengan foto dan lokasi">
+    <link rel="shortcut icon" href="favicon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1976d2">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="DicodingStory">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">    <title>Dicoding Stories - Platform Berbagi Cerita</title>    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+              // Service Worker registered successfully
+            })
+            .catch(function(error) {
+              // Service Worker registration failed
+            });
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    
+    <header role="banner">
+      <div class="main-header container">
+        <a class="brand-name" href="#/" aria-label="Dicoding Stories - Kembali ke beranda">📖 Dicoding Stories</a>        <nav id="navigation-drawer" class="navigation-drawer" aria-label="Navigasi utama" role="navigation">
+          <ul id="nav-list" class="nav-list">
+          </ul>
+        </nav>
+
+        <button id="drawer-button" class="drawer-button" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="navigation-drawer">☰</button>
+      </div>
+    </header>    <main id="main-content" class="main-content" role="main" tabindex="-1"></main>
+    
+    <footer role="contentinfo" class="main-footer">
+      <div class="container">
+        <div class="footer-content">
+          <p>&copy; 2025 Dicoding Stories. Platform berbagi cerita dengan foto dan lokasi.</p>
+          <p>Dibuat dengan ❤️ untuk komunitas Dicoding</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

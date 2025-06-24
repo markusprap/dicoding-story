@@ -1,0 +1,66 @@
+{
+  "name": "Dicoding Story Web",
+  "short_name": "DicodingStory",
+  "description": "Platform untuk berbagi dan menjelajahi cerita-cerita menarik dari komunitas Dicoding",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1976d2",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Tambah Story Baru",
+      "short_name": "Add Story",
+      "description": "Buat dan bagikan cerita baru",
+      "url": "#/add",
+      "icons": [
+        {
+          "src": "images/logo.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "images/logo.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dicoding Story Web - Desktop View"
+    },
+    {
+      "src": "images/logo.png", 
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Dicoding Story Web - Mobile View"
+    }
+  ],
+  "categories": ["social", "entertainment", "lifestyle"],
+  "lang": "id",
+  "dir": "ltr",
+  "prefer_related_applications": false
+}
