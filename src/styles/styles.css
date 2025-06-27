@@ -1281,7 +1281,7 @@ span[aria-label="wajib diisi"] {
 
 @media (max-width: 900px) {
   .about-page {
-    padding: 28px 10px;
+    padding: 28px 18px;
   }
   .about-header {
     flex-direction: column;
@@ -1292,7 +1292,7 @@ span[aria-label="wajib diisi"] {
 
 @media (max-width: 600px) {
   .about-page {
-    padding: 16px 4px;
+    padding: 14px 8px;
     gap: 18px;
   }
   .about-title {
