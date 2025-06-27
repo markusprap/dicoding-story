@@ -21,12 +21,12 @@ export default class SavedStoriesPage {
     }
     return `
       <section class="saved-stories-container">
-        <div class="page-header">
-          <h1>Saved Stories</h1>
-          <p>Kelola stories yang telah Anda simpan</p>
+        <div class="page-header" style="display:flex; flex-direction:column; align-items:center; justify-content:center; margin-bottom:1.5em;">
+          <h1 style="margin-bottom:0.2em; font-size:3rem; font-weight:800; text-align:center;">Saved Stories</h1>
+          <p style="margin-top:0; font-size:1.3rem; color:#666; text-align:center;">Kelola stories yang telah Anda simpan</p>
         </div>
 
-        <div class="saved-controls">
+        <div class="saved-controls" style="display:flex; flex-direction:column; align-items:center;">
           <div class="control-group">
             <button id="refresh-saved-data" class="btn btn-primary">
               Refresh
@@ -147,26 +147,22 @@ export default class SavedStoriesPage {
   }
 
   _setupEventListeners() {
-    
     const refreshBtn = document.getElementById('refresh-saved-data');
     if (refreshBtn) {
       refreshBtn.addEventListener('click', async () => {
         refreshBtn.disabled = true;
         refreshBtn.innerHTML = 'Loading...';
-        
         await this._loadSavedData();
-        
         refreshBtn.disabled = false;
         refreshBtn.innerHTML = 'Refresh';
         this._showSuccess('Data berhasil di-refresh');
       });
     }
 
-    
     const clearBtn = document.getElementById('clear-all-saved');
     if (clearBtn) {
       clearBtn.addEventListener('click', async () => {
-        const confirmed = await showConfirmDialog('Apakah Anda yakin ingin menghapus semua saved stories? Tindakan ini tidak dapat dibatalkan.');
+        const confirmed = await SavedStoriesPage.showConfirmDialog('Apakah Anda yakin ingin menghapus semua saved stories? Tindakan ini tidak dapat dibatalkan.');
         if (confirmed) {
           await this._clearAllData();
         }
@@ -184,49 +180,53 @@ export default class SavedStoriesPage {
       });
     });
 
-    
     const deleteButtons = document.querySelectorAll('.delete-saved-story');
     deleteButtons.forEach(btn => {
       btn.addEventListener('click', async (e) => {
         const storyId = e.target.closest('.delete-saved-story').dataset.id;
-        const confirmed = await showConfirmDialog('Hapus story ini dari saved stories?');
+        const confirmed = await SavedStoriesPage.showConfirmDialog('Hapus story ini dari saved stories?');
         if (confirmed) {
           await this._deleteStory(storyId);
         }
       });
     });
+  }
 
-function showConfirmDialog(message) {
-  return new Promise((resolve) => {
-    const dialog = document.getElementById('custom-confirm-dialog');
-    if (!dialog) return resolve(window.confirm(message));
-    dialog.classList.remove('hidden');
-    dialog.querySelector('.dialog-message').textContent = message;
-    const onConfirm = () => {
-      cleanup();
-      resolve(true);
-    };
-    const onCancel = () => {
-      cleanup();
-      resolve(false);
-    };
-    function cleanup() {
-      dialog.classList.add('hidden');
-      confirmBtn.removeEventListener('click', onConfirm);
-      cancelBtn.removeEventListener('click', onCancel);
-      dialog.querySelector('.dialog-backdrop').removeEventListener('click', onCancel);
-    }
-    const confirmBtn = dialog.querySelector('.dialog-confirm');
-    const cancelBtn = dialog.querySelector('.dialog-cancel');
-    confirmBtn.addEventListener('click', onConfirm);
-    cancelBtn.addEventListener('click', onCancel);
-    dialog.querySelector('.dialog-backdrop').addEventListener('click', onCancel);
-  });
-}
+  static showConfirmDialog(message) {
+    return new Promise((resolve) => {
+      const dialog = document.getElementById('custom-confirm-dialog');
+      if (!dialog) return resolve(window.confirm(message));
+      dialog.classList.remove('hidden');
+      dialog.querySelector('.dialog-message').textContent = message;
+      const onConfirm = () => {
+        cleanup();
+        resolve(true);
+      };
+      const onCancel = () => {
+        cleanup();
+        resolve(false);
+      };
+      function cleanup() {
+        dialog.classList.add('hidden');
+        confirmBtn.removeEventListener('click', onConfirm);
+        cancelBtn.removeEventListener('click', onCancel);
+        dialog.querySelector('.dialog-backdrop').removeEventListener('click', onCancel);
+      }
+      const confirmBtn = dialog.querySelector('.dialog-confirm');
+      const cancelBtn = dialog.querySelector('.dialog-cancel');
+      confirmBtn.addEventListener('click', onConfirm);
+      cancelBtn.addEventListener('click', onCancel);
+      dialog.querySelector('.dialog-backdrop').addEventListener('click', onCancel);
+    });
   }
 
   async _clearAllData() {
+    const clearBtn = document.getElementById('clear-all-saved');
     try {
+      if (clearBtn) {
+        clearBtn.disabled = true;
+        clearBtn.innerHTML = 'Menghapus...';
+      }
       if (!window.indexedDBManager) {
         window.indexedDBManager = new IndexedDBManager();
         await window.indexedDBManager.init();
@@ -235,8 +235,13 @@ function showConfirmDialog(message) {
       await this._loadSavedData();
       this._showSuccess('Semua saved stories berhasil dihapus');
     } catch (error) {
-      console.error('Error clearing data:', error);
       this._showError('Gagal menghapus saved stories');
+      alert('Terjadi kesalahan saat menghapus semua data: ' + (error && error.message ? error.message : error));
+    } finally {
+      if (clearBtn) {
+        clearBtn.disabled = false;
+        clearBtn.innerHTML = 'Hapus Semua';
+      }
     }
   }
 
@@ -249,6 +254,8 @@ function showConfirmDialog(message) {
       await window.indexedDBManager.deleteStory(storyId);
       await this._loadSavedData();
       this._showSuccess('Story berhasil dihapus dari saved stories');
+      // Trigger event agar home page update tombol
+      window.dispatchEvent(new Event('savedStoriesChanged'));
     } catch (error) {
       console.error('Error deleting story:', error);
       this._showError('Gagal menghapus story');

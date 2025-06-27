@@ -63,12 +63,23 @@ export default class DetailPage {
     }
     
     if (storyEl) {
-      storyEl.innerHTML = `
+      // Cek status saved
+      const renderDetailWithSaveButton = async () => {
+        if (!window.indexedDBManager) {
+          window.indexedDBManager = new (await import('../../utils/indexeddb-manager.js')).default();
+          await window.indexedDBManager.init();
+        }
+        const savedStories = await window.indexedDBManager.getAllStories();
+        const isSaved = savedStories.some(s => s.id === story.id);
+        storyEl.innerHTML = `
         <div class="story-detail-card" style="background: white; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.10); padding: 32px 24px; max-width: 700px; margin: 0 auto 32px auto;">
           <article class="story-detail-item" role="article" aria-labelledby="story-title">
             <img src="${story.photoUrl || ''}" alt="Foto cerita: ${story.name}" class="story-img" loading="lazy" style="max-width: 100%; border-radius: 12px; margin-bottom: 18px;" />
             <h2 id="story-title" style="font-size:2rem; font-weight:700; margin-bottom:12px; color:#333;">${story.name}</h2>
             <p aria-label="Deskripsi cerita" style="color:#555; font-size:1.1rem; margin-bottom:18px;">${story.description}</p>
+            <button id="save-story-detail-btn" class="btn ${isSaved ? 'btn-success' : 'btn-secondary'}" style="margin-bottom:18px;" ${isSaved ? 'disabled' : ''}>
+              ${isSaved ? 'Saved' : 'Save Story'}
+            </button>
             <section class="location-card" role="region" aria-label="Informasi lokasi cerita">
               <div class="location-header">
                 <span class="location-icon" aria-hidden="true">📍</span>
@@ -92,7 +103,32 @@ export default class DetailPage {
             </div>
           </article>
         </div>
-      `;
+        `;
+        // Event tombol save
+        const saveBtn = document.getElementById('save-story-detail-btn');
+        if (saveBtn && !isSaved) {
+          saveBtn.addEventListener('click', async () => {
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+            try {
+              await window.indexedDBManager.saveStory(story);
+              saveBtn.textContent = 'Saved';
+              saveBtn.classList.remove('btn-secondary');
+              saveBtn.classList.add('btn-success');
+              window.dispatchEvent(new Event('savedStoriesChanged'));
+            } catch (err) {
+              saveBtn.disabled = false;
+              saveBtn.textContent = 'Save Story';
+              alert('Gagal menyimpan story');
+            }
+          });
+        }
+        // Listen event agar tombol update jika dihapus dari Saved Stories
+        window.addEventListener('savedStoriesChanged', async () => {
+          await renderDetailWithSaveButton();
+        });
+      };
+      renderDetailWithSaveButton();
     }
     
     if (story.lat && story.lon) {

@@ -16,24 +16,48 @@ export default class HomePage {
 
   async afterRender() {
     document.title = "Home | Dicoding Stories";
-    
     const model = new StoryModel();
     const presenter = new HomePresenter(model, this);
-    
     await presenter.loadStories();
+    // Simpan handler agar bisa di-remove
+    this._savedStoriesHandler = async () => {
+      await presenter.loadStories();
+    };
+    window.addEventListener('savedStoriesChanged', this._savedStoriesHandler);
+  }
+
+  beforeDestroy() {
+    // Hapus event listener jika ada
+    if (this._savedStoriesHandler) {
+      window.removeEventListener('savedStoriesChanged', this._savedStoriesHandler);
+    }
   }
 
   showLoading() {
-    document.getElementById('loading-message').style.display = 'block';
-    document.getElementById('error-message').style.display = 'none';
-    document.getElementById('story-list').innerHTML = '';
+    const loadingMsg = document.getElementById('loading-message');
+    const errorMsg = document.getElementById('error-message');
+    const storyList = document.getElementById('story-list');
+    if (loadingMsg) loadingMsg.style.display = 'block';
+    if (errorMsg) errorMsg.style.display = 'none';
+    if (storyList) storyList.innerHTML = '';
   }
 
   renderStories(stories) {
     document.getElementById('loading-message').style.display = 'none';
     document.getElementById('error-message').style.display = 'none';
     const container = document.getElementById('story-list');
-    container.innerHTML = stories.map(story => `
+
+    // Cek status saved untuk setiap story
+    const renderWithSavedStatus = async () => {
+      if (!window.indexedDBManager) {
+        window.indexedDBManager = new IndexedDBManager();
+        await window.indexedDBManager.init();
+      }
+      const savedStories = await window.indexedDBManager.getAllStories();
+      const savedIds = new Set(savedStories.map(s => s.id));
+      container.innerHTML = stories.map(story => {
+        const isSaved = savedIds.has(story.id);
+        return `
       <article class="story-item" data-id="${story.id}">
         <div class="story-content" tabindex="0" role="button" aria-label="Cerita ${story.name}. Klik untuk melihat detail.">
           <img src="${story.photoUrl}" alt="Foto cerita: ${story.name}" class="story-img" loading="lazy" />
@@ -47,14 +71,16 @@ export default class HomePage {
           <button class="btn btn-primary view-story" data-id="${story.id}">
             Lihat Detail
           </button>
-          <button class="btn btn-secondary save-story" data-id="${story.id}">
-            Save Story
+          <button class="btn ${isSaved ? 'btn-success' : 'btn-secondary'} save-story" data-id="${story.id}" ${isSaved ? 'disabled' : ''}>
+            ${isSaved ? 'Saved' : 'Save Story'}
           </button>
         </div>
       </article>
-    `).join('');
-    
-    this._setupStoryEventListeners();
+      `;
+      }).join('');
+      this._setupStoryEventListeners();
+    };
+    renderWithSavedStatus();
   }
 
   _setupStoryEventListeners() {
@@ -96,45 +122,28 @@ export default class HomePage {
 
   async _saveStory(storyId, buttonElement) {
     try {
-      
       buttonElement.disabled = true;
       buttonElement.textContent = 'Saving...';
-
-      
       const storyModel = window.storyModel;
       if (!storyModel) {
         throw new Error('Story model tidak tersedia');
       }
-
-      
       const stories = await storyModel.getStories();
       const story = Array.isArray(stories) ? stories.find(s => s.id === storyId) : null;
       if (!story) {
         throw new Error('Story tidak ditemukan');
       }
-
-      
       if (!window.indexedDBManager) {
         window.indexedDBManager = new IndexedDBManager();
         await window.indexedDBManager.init();
       }
       await window.indexedDBManager.saveStory(story);
-
-      
-      buttonElement.textContent = 'Saved';
-      buttonElement.classList.remove('btn-secondary');
-      buttonElement.classList.add('btn-success');
-      
+      // Setelah save, render ulang agar tombol update
+      if (typeof this.renderStories === 'function' && window.storyModel) {
+        const freshStories = await window.storyModel.getStories();
+        this.renderStories(freshStories);
+      }
       this._showNotification('Story berhasil disimpan', 'success');
-
-      
-      setTimeout(() => {
-        buttonElement.disabled = false;
-        buttonElement.textContent = 'Save Story';
-        buttonElement.classList.remove('btn-success');
-        buttonElement.classList.add('btn-secondary');
-      }, 2000);
-
     } catch (error) {
       console.error('Error saving story:', error);
       buttonElement.disabled = false;
@@ -157,8 +166,12 @@ export default class HomePage {
   }
 
   renderFailedMessage(message) {
-    document.getElementById('loading-message').style.display = 'none';
-    document.getElementById('error-message').style.display = 'block';
-    document.getElementById('error-message').innerText = message || 'Gagal memuat data cerita.';
+    const loadingMsg = document.getElementById('loading-message');
+    const errorMsg = document.getElementById('error-message');
+    if (loadingMsg) loadingMsg.style.display = 'none';
+    if (errorMsg) {
+      errorMsg.style.display = 'block';
+      errorMsg.innerText = message || 'Gagal memuat data cerita.';
+    }
   }
 }
