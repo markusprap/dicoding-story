@@ -117,24 +117,8 @@ class PushNotificationManager {
     const hasNotification = 'Notification' in window;
     return hasServiceWorker && hasPushManager && hasNotification;
   }  async _getVapidKey() {
-    try {
-      const response = await fetch(`${CONFIG.BASE_URL}/auth/vapid-key`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        this.vapidPublicKey = this._urlBase64ToUint8Array(data.publicKey);
-      } else {
-        this.vapidPublicKey = this._urlBase64ToUint8Array('BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk');
-      }
-    } catch (error) {
-      this.vapidPublicKey = this._urlBase64ToUint8Array('BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk');
-    }
+    
+    this.vapidPublicKey = this._urlBase64ToUint8Array(CONFIG.VAPID_PUBLIC_KEY);
   }
 
   async _restoreSubscription() {

@@ -8,7 +8,9 @@ import PushNotificationManager from './utils/push-notification-manager';
 import PWAInstallManager from './utils/pwa-install-manager';
 import OfflineManager from './utils/offline-manager';
 
-// Fix Leaflet marker icons
+import { StoryModel } from './data/api';
+
+
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -62,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
 
-    // Initialize app
+
     const app = new App({
       content: document.querySelector('#main-content'),
       drawerButton: document.querySelector('#drawer-button'),
@@ -70,13 +72,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     await app.renderPage();
 
-    // Register Workbox Service Worker
+
     if ('serviceWorker' in navigator) {
       const wb = new Workbox('/sw.js');
       
       wb.addEventListener('installed', (event) => {
         if (event.isUpdate) {
-          // Show update available notification
+
           if (confirm('App update available. Reload to get the latest version?')) {
             window.location.reload();
           }
@@ -84,7 +86,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
 
       wb.addEventListener('waiting', (event) => {
-        // Show user a prompt to refresh/reload the page
+
         if (confirm('New version available. Reload to update?')) {
           wb.messageSkipWaiting();
           window.location.reload();
@@ -94,11 +96,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       try {
         await wb.register();
       } catch (error) {
-        console.log('SW registration failed');
+
       }
     }
 
-    // Initialize Push Notifications after app is ready
+
     try {
       const pushNotificationUI = new PushNotificationUI();
       await pushNotificationUI.initialize();
@@ -108,11 +110,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         return PushNotificationManager.checkBrowserSupport();
       };
     } catch (error) {
-      // Silent fail
+
     }
     try {
       const offlineManager = new OfflineManager();
       window.offlineManager = offlineManager;
+    } catch (error) {}
+
+
+    try {
+      const storyModel = new StoryModel();
+      if (window.offlineManager) {
+        storyModel.setOfflineManager(window.offlineManager);
+      }
+      window.storyModel = storyModel;
     } catch (error) {}
     try {
       const pwaInstallManager = new PWAInstallManager();

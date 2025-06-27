@@ -17,7 +17,7 @@ class OfflineManager {
         await this.processSyncQueue();
       }
     } catch (error) {
-      // Initialization failed
+      
     }
   }
 
@@ -75,28 +75,47 @@ class OfflineManager {
   }
 
   async getStories() {
-    if (this.isOnline) {
+    
+    const token = localStorage.getItem('token');
+    if (this.isOnline && token) {
       try {
-        const response = await fetch('/api/stories', {
+        
+        let CONFIG;
+        try {
+          CONFIG = (await import('../config.js')).default;
+        } catch (e) {
+          
+          CONFIG = window.CONFIG;
+        }
+        const response = await fetch(`${CONFIG.BASE_URL}/stories`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-            'Content-Type': 'application/json'
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
           }
         });
 
         if (response.ok) {
           const data = await response.json();
           const stories = data.listStory || [];
-          
           await this.dbManager.saveStories(stories);
           return {
             data: { listStory: stories },
             error: false,
             message: 'Stories fetched successfully'
           };
+        } else if (response.status === 401) {
+          localStorage.removeItem('token');
+          window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { authenticated: false } }));
+          return {
+            data: { listStory: [] },
+            error: true,
+            message: 'Session expired. Please login again.'
+          };
         }
+        
       } catch (error) {
-        // API error - fall back to cache
+        
       }
     }
 
@@ -141,7 +160,7 @@ class OfflineManager {
           };
         }
       } catch (error) {
-        // API error - fall back to cache
+        
       }
     }
 
@@ -232,7 +251,7 @@ class OfflineManager {
       await this.dbManager.clearAllStories();
       this.syncQueue = [];
     } catch (error) {
-      // Cache clear error
+      
     }
   }
 

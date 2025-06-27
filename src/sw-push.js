@@ -1,4 +1,3 @@
-// Push notification handling for Workbox-generated SW
 self.addEventListener('push', (event) => {
   let notificationData = {};
   

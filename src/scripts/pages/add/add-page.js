@@ -30,7 +30,7 @@ export default class AddPage {  constructor() {
               <video id="camera-preview" style="display:none; width:100%; max-width:400px; border-radius:12px; margin:12px 0;" aria-label="Preview kamera"></video>
               <canvas id="photo-canvas" style="display:none;" aria-hidden="true"></canvas>
               <div id="photo-preview" style="display:none; margin:12px 0;" role="img" aria-label="Preview foto yang diambil"></div>
-              <input id="photo-file" name="photo" type="file" accept="image/*" style="margin-top:12px;" aria-label="Pilih file foto dari perangkat" />
+              <input id="photo-file" name="photo" type="file" accept="image/*" aria-label="Pilih file foto dari perangkat" />
             </div>
           </div>          <div class="form-group">
             <label for="location">Lokasi (opsional)</label>

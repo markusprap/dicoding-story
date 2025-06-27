@@ -102,6 +102,7 @@ class App {
       navList.innerHTML = `
         <li><a href="#/" aria-label="Halaman beranda">Beranda</a></li>
         <li><a href="#/add" aria-label="Tambah cerita baru">Tambah Cerita</a></li>
+        <li><a href="#/saved" aria-label="Stories yang disimpan">Saved Stories</a></li>
         <li><a href="#/about" aria-label="Tentang aplikasi">About</a></li>
         <li><button id="logout-btn" class="logout-btn" aria-label="Keluar dari aplikasi">Logout</button></li>
       `;
@@ -240,7 +241,7 @@ class App {
         return;
       }
 
-      // Update navigation and render the page
+      
       this._updateNavigation();      const page = routes[url];
       if (!page) {
         const notFoundPage = routes['/404'];

@@ -1,58 +1,52 @@
 import CONFIG from '../config';
 
+
 export class StoryModel {
   constructor() {
-    // Will be injected by app initialization
+    
     this.offlineManager = null;
   }
 
   setOfflineManager(offlineManager) {
-    this.offlineManager = offlineManager;
-  }  async getStories() {
+    
+  }
+
+  async getStories() {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found');
       }
-      
-      if (this.offlineManager) {
-        return await this.offlineManager.getStories();
-      }
-      
       const url = `${CONFIG.BASE_URL}/stories`;
-      
       const response = await fetch(url, {
-        headers: { 
+        headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
       });
-      
       if (!response.ok) {
         if (response.status === 401) {
           localStorage.removeItem('token');
-          window.dispatchEvent(new CustomEvent('authStateChanged', { 
-            detail: { authenticated: false } 
+          window.dispatchEvent(new CustomEvent('authStateChanged', {
+            detail: { authenticated: false }
           }));
           return [];
         }
-        
         const errorText = await response.text();
         throw new Error(`Failed to fetch stories: ${response.status} ${response.statusText}`);
       }
-      
       const responseData = await response.json();
-      
       if (!responseData.listStory) {
         throw new Error('Invalid response format from API');
       }
-      
       return responseData.listStory;
     } catch (error) {
       throw error;
     }
-  }  async getStory(id) {
+  }
+
+  async getStory(id) {
     try {
       const token = localStorage.getItem('token');
       if (!token) {

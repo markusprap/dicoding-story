@@ -25,35 +25,35 @@ export default class AboutPage {
             <h2>Fitur Utama</h2>
             <ul class="about-features">
               <li>
-                <span class="feature-icon">🔐</span>
+                <span class="feature-icon" aria-hidden="true">🔐</span>
                 <div class="feature-text">
                   <strong>Autentikasi</strong>
                   <p>Login dan register dengan aman melalui API Dicoding</p>
                 </div>
               </li>
               <li>
-                <span class="feature-icon">📷</span>
+                <span class="feature-icon" aria-hidden="true">📷</span>
                 <div class="feature-text">
                   <strong>Unggah Foto</strong>
                   <p>Berbagi cerita dengan foto langsung dari kamera atau galeri</p>
                 </div>
               </li>
               <li>
-                <span class="feature-icon">🗺️</span>
+                <span class="feature-icon" aria-hidden="true">🗺️</span>
                 <div class="feature-text">
                   <strong>Lokasi</strong>
                   <p>Tambahkan lokasi Anda saat mengunggah cerita</p>
                 </div>
               </li>
               <li>
-                <span class="feature-icon">🔍</span>
+                <span class="feature-icon" aria-hidden="true">🔍</span>
                 <div class="feature-text">
                   <strong>Detail Cerita</strong>
                   <p>Lihat cerita pengguna lain lengkap dengan lokasi di peta</p>
                 </div>
               </li>
               <li>
-                <span class="feature-icon">📱</span>
+                <span class="feature-icon" aria-hidden="true">📱</span>
                 <div class="feature-text">
                   <strong>Responsif</strong>
                   <p>Tampilan yang menyesuaikan dengan berbagai ukuran layar</p>

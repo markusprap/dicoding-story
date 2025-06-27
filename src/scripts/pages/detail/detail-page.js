@@ -64,31 +64,34 @@ export default class DetailPage {
     
     if (storyEl) {
       storyEl.innerHTML = `
-        <article class="story-detail-item" role="article" aria-labelledby="story-title">
-          <img src="${story.photoUrl || ''}" alt="Foto cerita: ${story.name}" class="story-img" loading="lazy" />
-          <h2 id="story-title">${story.name}</h2>
-          <p aria-label="Deskripsi cerita">${story.description}</p>
-          <section class="location-card" role="region" aria-label="Informasi lokasi cerita">
-            <div class="location-header">
-              <span class="location-icon" aria-hidden="true">📍</span>
-              <strong>Lokasi Cerita</strong>
+        <div class="story-detail-card" style="background: white; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.10); padding: 32px 24px; max-width: 700px; margin: 0 auto 32px auto;">
+          <article class="story-detail-item" role="article" aria-labelledby="story-title">
+            <img src="${story.photoUrl || ''}" alt="Foto cerita: ${story.name}" class="story-img" loading="lazy" style="max-width: 100%; border-radius: 12px; margin-bottom: 18px;" />
+            <h2 id="story-title" style="font-size:2rem; font-weight:700; margin-bottom:12px; color:#333;">${story.name}</h2>
+            <p aria-label="Deskripsi cerita" style="color:#555; font-size:1.1rem; margin-bottom:18px;">${story.description}</p>
+            <section class="location-card" role="region" aria-label="Informasi lokasi cerita">
+              <div class="location-header">
+                <span class="location-icon" aria-hidden="true">📍</span>
+                <strong>Lokasi Cerita</strong>
+              </div>
+              <div class="location-coords" aria-label="Koordinat lokasi">
+                <span>Latitude: ${story.lat ? parseFloat(story.lat).toFixed(6) : 'N/A'}</span>
+                <span>Longitude: ${story.lon ? parseFloat(story.lon).toFixed(6) : 'N/A'}</span>
+              </div>
+              <div class="location-actions" role="group" aria-label="Aksi peta">
+                <a href="https://www.google.com/maps?q=${story.lat || 0},${story.lon || 0}" target="_blank" class="map-link" rel="noopener" aria-label="Buka lokasi di Google Maps (tab baru)">
+                  <span aria-hidden="true">🗺️</span> Buka di Google Maps
+                </a>
+                <a href="https://www.openstreetmap.org/?mlat=${story.lat || 0}&mlon=${story.lon || 0}&zoom=15" target="_blank" class="map-link" rel="noopener" aria-label="Buka lokasi di OpenStreetMap (tab baru)">
+                  <span aria-hidden="true">🌍</span> Buka di OpenStreetMap
+                </a>
+              </div>
+            </section>
+            <div class="story-meta" style="margin-top:18px;">
+              <p><strong>Tanggal:</strong> <time datetime="${story.createdAt || ''}">${story.createdAt ? new Date(story.createdAt).toLocaleString() : 'N/A'}</time></p>
             </div>
-            <div class="location-coords" aria-label="Koordinat lokasi">
-              <span>Latitude: ${story.lat ? parseFloat(story.lat).toFixed(6) : 'N/A'}</span>
-              <span>Longitude: ${story.lon ? parseFloat(story.lon).toFixed(6) : 'N/A'}</span>
-            </div>
-            <div class="location-actions" role="group" aria-label="Aksi peta">
-              <a href="https://www.google.com/maps?q=${story.lat || 0},${story.lon || 0}" target="_blank" class="map-link" rel="noopener" aria-label="Buka lokasi di Google Maps (tab baru)">
-                <span aria-hidden="true">🗺️</span> Buka di Google Maps
-              </a>
-              <a href="https://www.openstreetmap.org/?mlat=${story.lat || 0}&mlon=${story.lon || 0}&zoom=15" target="_blank" class="map-link" rel="noopener" aria-label="Buka lokasi di OpenStreetMap (tab baru)">
-                <span aria-hidden="true">🌍</span> Buka di OpenStreetMap
-              </a>
-            </div>
-          </section>
-          <div class="story-meta">
-            <p><strong>Tanggal:</strong> <time datetime="${story.createdAt || ''}">${story.createdAt ? new Date(story.createdAt).toLocaleString() : 'N/A'}</time></p>
-          </div>        </article>
+          </article>
+        </div>
       `;
     }
     
@@ -133,7 +136,7 @@ export default class DetailPage {
         window.detailMapInstance.remove();
         window.detailMapInstance = null;
       } catch (e) {
-        // Silent cleanup
+        
       }
     }
     

@@ -126,7 +126,7 @@ class PWAInstallManager {
       
       this.deferredPrompt = null;
     } catch (error) {
-      // Error during install prompt
+      
     }
   }
 

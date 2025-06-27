@@ -16,10 +16,8 @@
         window.addEventListener('load', function() {
           navigator.serviceWorker.register('/sw.js')
             .then(function(registration) {
-              // Service Worker registered successfully
             })
             .catch(function(error) {
-              // Service Worker registration failed
             });
         });
       }
@@ -30,7 +28,7 @@
     
     <header role="banner">
       <div class="main-header container">
-        <a class="brand-name" href="#/" aria-label="Dicoding Stories - Kembali ke beranda">📖 Dicoding Stories</a>        <nav id="navigation-drawer" class="navigation-drawer" aria-label="Navigasi utama" role="navigation">
+        <a class="brand-name" href="#/" aria-label="Dicoding Stories - Kembali ke beranda">Dicoding Stories</a>        <nav id="navigation-drawer" class="navigation-drawer" aria-label="Navigasi utama" role="navigation">
           <ul id="nav-list" class="nav-list">
           </ul>
         </nav>
