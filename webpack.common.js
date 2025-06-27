@@ -56,7 +56,7 @@ module.exports = {
             },
             expiration: {
               maxEntries: 50,
-              maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+              maxAgeSeconds: 30 * 24 * 60 * 60,
             },
           },
         },
@@ -70,7 +70,7 @@ module.exports = {
             },
             expiration: {
               maxEntries: 100,
-              maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+              maxAgeSeconds: 30 * 24 * 60 * 60,
             },
           },
         },
@@ -91,7 +91,7 @@ module.exports = {
             },
             expiration: {
               maxEntries: 30,
-              maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+              maxAgeSeconds: 60 * 60 * 24 * 365,
             },
           },
         },

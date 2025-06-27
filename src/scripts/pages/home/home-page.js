@@ -19,7 +19,7 @@ export default class HomePage {
     const model = new StoryModel();
     const presenter = new HomePresenter(model, this);
     await presenter.loadStories();
-    // Simpan handler agar bisa di-remove
+    
     this._savedStoriesHandler = async () => {
       await presenter.loadStories();
     };
@@ -27,7 +27,7 @@ export default class HomePage {
   }
 
   beforeDestroy() {
-    // Hapus event listener jika ada
+    
     if (this._savedStoriesHandler) {
       window.removeEventListener('savedStoriesChanged', this._savedStoriesHandler);
     }
@@ -47,7 +47,7 @@ export default class HomePage {
     document.getElementById('error-message').style.display = 'none';
     const container = document.getElementById('story-list');
 
-    // Cek status saved untuk setiap story
+    
     const renderWithSavedStatus = async () => {
       if (!window.indexedDBManager) {
         window.indexedDBManager = new IndexedDBManager();
@@ -138,7 +138,7 @@ export default class HomePage {
         await window.indexedDBManager.init();
       }
       await window.indexedDBManager.saveStory(story);
-      // Setelah save, render ulang agar tombol update
+      
       if (typeof this.renderStories === 'function' && window.storyModel) {
         const freshStories = await window.storyModel.getStories();
         this.renderStories(freshStories);

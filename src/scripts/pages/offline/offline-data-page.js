@@ -254,7 +254,7 @@ export default class SavedStoriesPage {
       await window.indexedDBManager.deleteStory(storyId);
       await this._loadSavedData();
       this._showSuccess('Story berhasil dihapus dari saved stories');
-      // Trigger event agar home page update tombol
+      
       window.dispatchEvent(new Event('savedStoriesChanged'));
     } catch (error) {
       console.error('Error deleting story:', error);

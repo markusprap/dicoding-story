@@ -55,7 +55,7 @@ module.exports = merge(common, {
         secure: true,
         logLevel: 'debug',
         onProxyReq: (proxyReq, req, res) => {
-          // Add proper headers to pass AWS WAF
+
           proxyReq.setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
           proxyReq.setHeader('Accept', 'application/json, text/plain, */*');
           proxyReq.setHeader('Accept-Language', 'en-US,en;q=0.9,id;q=0.8');
@@ -64,13 +64,13 @@ module.exports = merge(common, {
           proxyReq.setHeader('Pragma', 'no-cache');
         },
         onProxyRes: (proxyRes, req, res) => {
-          // Add CORS headers
+
           res.setHeader('Access-Control-Allow-Origin', '*');
           res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
           res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
         },
         onError: (err, req, res) => {
-          // Proxy error
+
         }
       }
     ],

@@ -63,7 +63,7 @@ export default class DetailPage {
     }
     
     if (storyEl) {
-      // Cek status saved
+      
       const renderDetailWithSaveButton = async () => {
         if (!window.indexedDBManager) {
           window.indexedDBManager = new (await import('../../utils/indexeddb-manager.js')).default();

@@ -57,7 +57,7 @@ self.addEventListener('push', (event) => {
   );
 });
 
-// Handle notification clicks
+
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
